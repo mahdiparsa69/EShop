@@ -21,9 +21,9 @@ namespace EShop.Domain.Models
         public long Amount { get; set; }
 
         public TransactionStatus Status { get; set; }
-        public bool HasError { get; set; }
-        public string? ErrorMessage { get; set; }
 
-        public string? PaymentCode { get; set; }
+        public string ErrorMessage { get; set; }
+
+        public string PaymentCode { get; set; }
     }
 }

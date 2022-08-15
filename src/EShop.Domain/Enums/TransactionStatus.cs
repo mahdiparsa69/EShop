@@ -9,10 +9,8 @@ namespace EShop.Domain.Enums
 {
     public enum TransactionStatus
     {
-        [Display(Name = "موفقیت آمیز")]
-        Successful = 0,
-        [Display(Name = "ناموفق")]
-        UnSuccessful = 1,
-
+        None = 0,
+        Successful = 1,
+        UnSuccessful = 2,
     }
 }

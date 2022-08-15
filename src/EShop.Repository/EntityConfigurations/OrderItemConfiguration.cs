@@ -7,23 +7,18 @@ namespace EShop.Repository.EntityConfigurations
     {
         public override void ConfigureDerived(EntityTypeBuilder<OrderItem> builder)
         {
+            builder.Property(x => x.OrderId).IsRequired();
+            builder.Property(x => x.ProductId).IsRequired();
+
             builder
-                .HasOne<Order>(x => x.Order)
+                .HasOne(x => x.Order)
                 .WithMany(x => x.OrderItems)
                 .HasForeignKey(x => x.OrderId);
 
             builder
-                .HasOne<Product>(x => x.Product)
+                .HasOne(x => x.Product)
                 .WithMany(x => x.OrderItems)
                 .HasForeignKey(x => x.ProductId);
-
-            builder.Property(x => x.OrderId).IsRequired();
-            builder.Property(x => x.ProductId).IsRequired();
-            builder.Property(x => x.Count).IsRequired();
-            builder.Property(x => x.ProductPrice).IsRequired();
-            builder.Property(x => x.TotalPrice).IsRequired();
-
-
         }
     }
 }

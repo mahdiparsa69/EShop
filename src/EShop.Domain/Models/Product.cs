@@ -10,7 +10,7 @@ namespace EShop.Domain.Models
 {
     public class Product : BaseModel
     {
-        public string Title { get; set; }
+        public string Name { get; set; }
 
         public int AvailableCount { get; set; }
 

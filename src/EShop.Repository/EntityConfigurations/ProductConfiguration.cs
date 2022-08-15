@@ -8,18 +8,15 @@ namespace EShop.Repository.EntityConfigurations
     {
         public override void ConfigureDerived(EntityTypeBuilder<Product> builder)
         {
-            builder
-                .HasMany<OrderItem>(x => x.OrderItems)
-                .WithOne(x => x.Product)
-                .HasForeignKey(x => x.ProductId);
-
-            builder.Property(x => x.Title).IsRequired().HasMaxLength(256);
-            builder.Property(x => x.AvailableCount).IsRequired();
-            builder.Property(x => x.Price).IsRequired();
+            builder.Property(x => x.Name).IsRequired().HasMaxLength(256);
 
             //Indexes
-            builder.HasIndex(x => x.Title).HasFilter("IsDeleted=0");
+            builder.HasIndex(x => x.Name).HasFilter("NOT is_deleted");
 
+            builder
+                .HasMany(x => x.OrderItems)
+                .WithOne(x => x.Product)
+                .HasForeignKey(x => x.ProductId);
         }
     }
 }

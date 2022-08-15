@@ -8,23 +8,21 @@ namespace EShop.Repository.EntityConfigurations
     {
         public override void ConfigureDerived(EntityTypeBuilder<Transaction> builder)
         {
+            builder.Property(x => x.UserId).IsRequired();
+            builder.Property(x => x.OrderId).IsRequired();
+
+            //Indexes
+            builder.HasIndex(x => x.Status).HasFilter("NOT is_deleted").IsUnique();
+
             builder
-                .HasOne<Order>(x => x.Order)
+                .HasOne(x => x.Order)
                 .WithMany(x => x.Transactions)
                 .HasForeignKey(x => x.OrderId);
 
             builder
-                .HasOne<User>(x => x.User)
+                .HasOne(x => x.User)
                 .WithMany(x => x.Transactions)
                 .HasForeignKey(x => x.UserId);
-
-            builder.Property(x => x.UserId).IsRequired();
-            builder.Property(x => x.OrderId).IsRequired();
-            builder.Property(x => x.Amount).IsRequired();
-            builder.Property(x => x.HasError).IsRequired();
-
-            //Indexes
-            builder.HasIndex(x => x.Status).HasFilter("IsDeleted=0").IsUnique();
         }
     }
 }
