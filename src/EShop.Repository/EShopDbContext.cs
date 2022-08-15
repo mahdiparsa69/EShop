@@ -26,7 +26,8 @@ public class EShopDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSnakeCaseNamingConvention();
+        /*optionsBuilder.UseSnakeCaseNamingConvention();
+        base.OnConfiguring(optionsBuilder);*/
     }
 
     public DbSet<Product> Products { get; set; }

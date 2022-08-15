@@ -17,6 +17,7 @@ namespace EShop.Repository
             services.AddDbContextPool<EShopDbContext>(options =>
             {
                 options.UseNpgsql(configuration.GetSection("EShopDatabase").Value);
+                options.UseSnakeCaseNamingConvention();
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
             }, 1024);
         }

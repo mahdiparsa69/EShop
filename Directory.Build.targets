@@ -68,10 +68,10 @@
 		<PackageReference Update="xunit.runner.visualstudio" Version="2.4.5" />
 
 		<!--EntityFramework packages-->
-		<PackageReference Update="Microsoft.EntityFrameworkCore" Version="6.0.7" />
+		<PackageReference Update="Microsoft.EntityFrameworkCore" Version="6.0.8" />
 		<PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.6" />
 		<PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.6" />
-		<PackageReference Update="Microsoft.EntityFrameworkCore.Design" Version="6.0.6" />
+		<PackageReference Update="Microsoft.EntityFrameworkCore.Design" Version="6.0.8" />
 		<PackageReference Include="EFCore.NamingConventions" Version="6.0.0" />
 
 		<!--Microsoft-->
@@ -100,6 +100,8 @@
 		<PackageReference Update="Microsoft.Extensions.Http.Polly" Version="6.0.6" />
 		<PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.6" />
 		<PackageReference Update="Microsoft.Diagnostics.Tracing.TraceEvent" Version="3.0.2" />
+		<PackageReference Update="Microsoft.EntityFrameworkCore.Tools" Version="6.0.8" />
+
 
 
 	</ItemGroup>
