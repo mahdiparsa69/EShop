@@ -17,6 +17,14 @@ namespace EShop.Repository.EntityConfigurations
                 .HasOne<User>(x => x.User)
                 .WithMany(x => x.Transactions)
                 .HasForeignKey(x => x.UserId);
+
+            builder.Property(x => x.UserId).IsRequired();
+            builder.Property(x => x.OrderId).IsRequired();
+            builder.Property(x => x.Amount).IsRequired();
+            builder.Property(x => x.HasError).IsRequired();
+
+            //Indexes
+            builder.HasIndex(x => x.Status).HasFilter("IsDeleted=0").IsUnique();
         }
     }
 }

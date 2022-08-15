@@ -1,6 +1,7 @@
 ﻿using EShop.Domain.Models;
 using EShop.Repository.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
+using EFCore.NamingConventions;
 
 namespace EShop.Repository
 {
@@ -21,16 +22,23 @@ namespace EShop.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
             modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
 
-
             /*base.OnModelCreating(modelBuilder);
              var assembly = typeof(ProductConfiguration).Assembly;
             modelBuilder.ApplyConfigurationsFromAssembly(assembly);*/
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSnakeCaseNamingConvention();
+            //base.OnConfiguring(optionsBuilder);
+        }
     }
+
 }

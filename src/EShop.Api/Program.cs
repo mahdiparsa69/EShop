@@ -2,6 +2,7 @@ using EShop.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddEShopRepository();
 
 // Add services to the container.
 

@@ -1,4 +1,5 @@
 ﻿using EShop.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EShop.Repository.EntityConfigurations
@@ -25,7 +26,7 @@ namespace EShop.Repository.EntityConfigurations
             builder.Property(x => x.Address).IsRequired().HasMaxLength(256);
 
             //Indexes
-            builder.HasIndex(x => x.Username).IsUnique();
+            builder.HasIndex(x => x.Username).HasFilter("IsDeleted=0").IsUnique();
         }
     }
 }

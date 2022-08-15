@@ -16,6 +16,14 @@ namespace EShop.Repository.EntityConfigurations
                 .HasOne<Product>(x => x.Product)
                 .WithMany(x => x.OrderItems)
                 .HasForeignKey(x => x.ProductId);
+
+            builder.Property(x => x.OrderId).IsRequired();
+            builder.Property(x => x.ProductId).IsRequired();
+            builder.Property(x => x.Count).IsRequired();
+            builder.Property(x => x.ProductPrice).IsRequired();
+            builder.Property(x => x.TotalPrice).IsRequired();
+
+
         }
     }
 }
