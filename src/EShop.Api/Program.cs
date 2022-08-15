@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEShopRepository(builder.Configuration);
+builder.Services.AddEShopRepositories(builder.Configuration.GetSection("ConnectionStrings"));
 
 // Add services to the container.
 

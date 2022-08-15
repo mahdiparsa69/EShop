@@ -12,13 +12,13 @@ namespace EShop.Repository
     public static class ServiceCollectionExtensions
     {
         // public static IConfigurationRoot Configuration;
-        public static IServiceCollection AddEShopRepository(this IServiceCollection services, IConfiguration configuration)
+        public static void AddEShopRepositories(this IServiceCollection services, IConfigurationSection configuration)
         {
             services.AddDbContextPool<EShopDbContext>(options =>
             {
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
-            });
-            return services;
+                options.UseNpgsql(configuration.GetSection("EShopDatabase").Value);
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
+            }, 1024);
         }
     }
 }
