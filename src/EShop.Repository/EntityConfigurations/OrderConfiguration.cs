@@ -1,5 +1,5 @@
 ﻿using EShop.Domain.Models;
-using Microsoft.EntityFrameworkCore
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Transaction = EShop.Domain.Models.Transaction;
 

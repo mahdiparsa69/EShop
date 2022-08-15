@@ -1,0 +1,11 @@
+<Project>
+	<PropertyGroup>
+
+		<LangVersion>10</LangVersion>
+
+		<Author>Mahdi Parsa Bitbaan Company</Author>
+		<NeutralLanguage>en-US</NeutralLanguage>
+		<AspNetCorePackageVersion>6.0</AspNetCorePackageVersion>
+
+	</PropertyGroup>
+</Project>

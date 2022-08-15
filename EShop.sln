@@ -11,7 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EShop.Repository", "src\ESh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EShop.Api", "src\EShop.Api\EShop.Api.csproj", "{813E7F2E-F636-4728-A355-2A0C9A74A5BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EShop.Service", "src\EShop.Service\EShop.Service.csproj", "{32459EE2-39DA-4A6E-BB7D-8ECC6A1F2921}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EShop.Service", "src\EShop.Service\EShop.Service.csproj", "{32459EE2-39DA-4A6E-BB7D-8ECC6A1F2921}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{EA2D42BC-C34E-46BF-900B-C755E70D4507}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
