@@ -9,7 +9,6 @@ namespace EShop.Repository.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<TEntity> builder)
         {
-
             builder.HasKey(x => x.Id);
             builder.Property(x => x.SeqId).ValueGeneratedOnAdd();
             ConfigureDerived(builder);
