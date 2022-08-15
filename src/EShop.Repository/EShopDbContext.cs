@@ -9,7 +9,6 @@ namespace EShop.Repository
         public EShopDbContext(DbContextOptions<EShopDbContext> options) : base(options)
         {
         }
-
         public DbSet<Product> Products { get; set; }
 
         public DbSet<User> Users { get; set; }
@@ -22,9 +21,16 @@ namespace EShop.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var assembly = typeof(ProductConfiguration).Assembly;
-            modelBuilder.ApplyConfigurationsFromAssembly(assembly);
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
+            modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+
+
+            /*base.OnModelCreating(modelBuilder);
+             var assembly = typeof(ProductConfiguration).Assembly;
+            modelBuilder.ApplyConfigurationsFromAssembly(assembly);*/
         }
     }
 }

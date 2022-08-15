@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EShop.Domain.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using EShop.Domain.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EShop.Repository.EntityConfigurations
 {
-    public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
+    public class OrderItemConfiguration : BaseModelConfiguration<OrderItem>
     {
-        public void Configure(EntityTypeBuilder<OrderItem> builder)
+        public override void ConfigureDerived(EntityTypeBuilder<OrderItem> builder)
         {
             builder
                 .HasOne<Order>(x => x.Order)
