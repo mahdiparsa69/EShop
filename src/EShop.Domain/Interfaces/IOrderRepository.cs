@@ -7,7 +7,7 @@ using EShop.Domain.Models;
 
 namespace EShop.Domain.Interfaces
 {
-    public interface IOrderRepository : IRepository<Order>
+    public interface IOrderRepository : IBaseRepository<Order>
     {
     }
 }

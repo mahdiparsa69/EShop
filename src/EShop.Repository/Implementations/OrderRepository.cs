@@ -8,7 +8,7 @@ using EShop.Domain.Models;
 
 namespace EShop.Repository.Implementations
 {
-    public class OrderRepository : Repository<Order>, IOrderRepository
+    public class OrderRepository : BaseRepository<Order>, IOrderRepository
     {
         private readonly EShopDbContext _dbContext;
 

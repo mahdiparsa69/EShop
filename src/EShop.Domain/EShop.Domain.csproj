@@ -14,7 +14,7 @@
 		<Compile Include="Interfaces\ITransactionRepository.cs" />
 		<Compile Include="Interfaces\IProductRepository.cs" />
 		<Compile Include="Interfaces\IOrderRepository.cs" />
-		<Compile Include="Interfaces\IRepository.cs" />
+		<Compile Include="Interfaces\IBaseRepository.cs" />
 		<Folder Include="Enums\" />
 	</ItemGroup>
 

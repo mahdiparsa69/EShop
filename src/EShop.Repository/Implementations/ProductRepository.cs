@@ -8,7 +8,7 @@ using EShop.Domain.Models;
 
 namespace EShop.Repository.Implementations
 {
-    public class ProductRepository : Repository<Product>, IProductRepository
+    public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
         private readonly EShopDbContext _dbContext;
 

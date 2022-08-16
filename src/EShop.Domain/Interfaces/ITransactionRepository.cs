@@ -7,7 +7,7 @@ using EShop.Domain.Models;
 
 namespace EShop.Domain.Interfaces
 {
-    public interface ITransactionRepository : IRepository<Transaction>
+    public interface ITransactionRepository : IBaseRepository<Transaction>
     {
     }
 }

@@ -8,7 +8,7 @@ using EShop.Domain.Models;
 
 namespace EShop.Repository.Implementations
 {
-    public class TransactionRepository : Repository<Transaction>, ITransactionRepository
+    public class TransactionRepository : BaseRepository<Transaction>, ITransactionRepository
     {
         private readonly EShopDbContext _dbContext;
 
