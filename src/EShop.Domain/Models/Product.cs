@@ -18,6 +18,6 @@ namespace EShop.Domain.Models
 
         public byte? DiscountPercent { get; set; }
 
-        public List<OrderItem>? OrderItems { get; set; }
+        public List<OrderItem> OrderItems { get; set; }
     }
 }

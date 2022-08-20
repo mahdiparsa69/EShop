@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using EShop.Api.Models.RequestModels;
 using EShop.Api.Models.ViewModels;
+using EShop.Domain.Common;
 using EShop.Domain.Filters;
 using EShop.Domain.Interfaces;
 using EShop.Domain.Models;
@@ -15,75 +17,97 @@ namespace EShop.Api.Controllers
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
 
-        public ProductController(IProductRepository repo, IMapper mapper)
+        public ProductController(IProductRepository productRepository, IMapper mapper)
         {
-            _productRepository = repo;
+            _productRepository = productRepository;
+
             _mapper = mapper;
         }
-        [HttpGet]
-        [Route("Index")]
-        public IActionResult Index()
-        {
-            return Ok("good");
-        }
 
         [HttpPost]
-        [Route("AddAsync")]
-        public async Task<IActionResult> AddAsync(Product product, CancellationToken cancellationToken)
+        public async Task<IActionResult> AddAsync([FromBody] ProductCreateRequest productCreateRequest)
         {
-            _productRepository.AddAsync(product, cancellationToken);
-            return Ok($"product {product.Name}:{product.Id} is added");
+            var product = _mapper.Map<Product>(productCreateRequest);
+
+            await _productRepository.AddAsync(product, HttpContext.RequestAborted);
+
+            var productViewModel = _mapper.Map<Product, ProductViewModel>(product);
+
+            return Ok(productViewModel);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetWithoutIncludeAsync([FromRoute] Guid id)
+        {
+            if (id == default)
+                return BadRequest();
+
+            var product = await _productRepository.GetWithoutIncludeAsync(id, HttpContext.RequestAborted);
+
+            if (product == null)
+                return NotFound();
+
+            var productViewModel = _mapper.Map<Product, ProductViewModel>(product);
+
+            return Ok(productViewModel);
         }
 
         [HttpGet]
-        [Route("GetWithoutIncludeAsync")]
-        public async Task<IActionResult> GetWithoutIncludeAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetListAsync([FromQuery] string? name, [FromQuery] int offSet = 0, [FromQuery] int count = 10)
         {
-            var result = await _productRepository.GetWithoutIncludeAsync(id, cancellationToken);
+            var products = await _productRepository.GetListAsync(new ProductFilter()
+            {
+                Name = name,
+                Offset = offSet,
+                Count = count
+            }, HttpContext.RequestAborted);
+
+            if (products.Items == null)
+                return default;
+
+            var result = _mapper.Map<List<Product>, List<ProductViewModel>>(products.Items);
 
             return Ok(result);
         }
 
-        [HttpGet]
-        [Route("GetListAsync")]
-        public async Task<IActionResult> GetListAsync(CancellationToken cancellationToken)
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
-            ProductFilter productFilter = new ProductFilter();
+            if (id == default)
+                return BadRequest();
 
-            productFilter.Count = 10;
-            var result = await _productRepository.GetListAsync(productFilter, cancellationToken);
+            var product = await _productRepository.GetWithoutIncludeAsync(id, HttpContext.RequestAborted);
 
-            return Ok(result);
+            if (product == null)
+                return NotFound();
+
+            await _productRepository.Remove(product, HttpContext.RequestAborted);
+
+            return Ok();
         }
 
-        [HttpPost]
-        [Route("Remove")]
-        public async Task<IActionResult> Remove(Guid id, CancellationToken cancellationToken)
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] ProductUpdateRequest productUpdateRequest)
         {
-            await _productRepository.Remove(id, cancellationToken);
-            return Ok("Deleted Successfully");
-        }
+            if (id == default)
+                return BadRequest();
 
-        [HttpPut]
-        public async Task<IActionResult> Update(ProductUpdateRequest productUpdateRequest, CancellationToken cancellationToken)
-        {
-            if (productUpdateRequest.Id == default)
+            var product = await _productRepository.GetWithoutIncludeAsync(id, HttpContext.RequestAborted);
+
+            if (product == null)
             {
                 return NotFound();
             }
 
-            var result = await _productRepository.GetWithoutIncludeAsync(productUpdateRequest.Id, cancellationToken);
+            _mapper.Map<ProductUpdateRequest, Product>(productUpdateRequest, product);
 
-            if (result == null)
-            {
-                return NotFound();
-            }
+            await _productRepository.Update(product, HttpContext.RequestAborted);
 
-            _mapper.Map<ProductUpdateRequest, Product>(productUpdateRequest, result);
+            var productViewModel = _mapper.Map<Product, ProductViewModel>(product);
 
-            await _productRepository.Update(result, cancellationToken);
+            return Ok(productViewModel);
 
-            return Ok($"Product {result.Name}:{result.Id} Updated Successfully");
+            //return Ok($"Product {product.Name}:{product.Id} Updated Successfully");
         }
     }
 }
