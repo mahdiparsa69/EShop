@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EShop.Domain.Interfaces;
+using EShop.Repository.Implementations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +22,13 @@ namespace EShop.Repository
                 options.UseSnakeCaseNamingConvention();
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
             }, 1024);
+
+            // services.AddScoped<IBaseRepository<Product,ProductFilter>,BaseRepository<Product, ProductFilter> > ();
+            services.AddScoped<IProductRepository, ProductRepository>();
+
+            //services.AddAutoMapper(typeof(Program));
+
+
         }
     }
 }

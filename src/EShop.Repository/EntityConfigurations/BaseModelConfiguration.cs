@@ -22,6 +22,9 @@ namespace EShop.Repository.EntityConfigurations
 
             builder.Property(x => x.CreatedAt).HasDefaultValueSql("NOW()");
 
+            builder.UseXminAsConcurrencyToken();
+
+
             ConfigureDerived(builder);
         }
 

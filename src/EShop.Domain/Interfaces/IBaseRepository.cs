@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EShop.Domain.Common;
+using EShop.Domain.Filters;
 using EShop.Domain.Models;
 
 namespace EShop.Domain.Interfaces
 {
-    public interface IBaseRepository<TModelBase> where TModelBase : BaseModel
+    public interface IBaseRepository<TModelBase, TFilter> where TModelBase : BaseModel
+        where TFilter : struct, IListFilter
     {
         //todo add cancellation to repository
 
@@ -30,21 +28,21 @@ namespace EShop.Domain.Interfaces
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        void Update(TModelBase entity, CancellationToken cancellationToken);
+        Task Update(TModelBase entity, CancellationToken cancellationToken);
 
         /// <summary>
         /// Update More Than One Object
         /// </summary>
         /// <param name="entities"></param>
         /// <returns></returns>
-        void UpdateRange(IEnumerable<TModelBase> entities, CancellationToken cancellationToken);
+        Task UpdateRange(IEnumerable<TModelBase> entities, CancellationToken cancellationToken);
 
         /// <summary>
         /// Remove One Object 
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        void Remove(TModelBase entity, CancellationToken cancellationToken);
+        Task Remove(TModelBase entity, CancellationToken cancellationToken);
 
         /// <summary>
         /// Remove One Object By Id
@@ -58,7 +56,7 @@ namespace EShop.Domain.Interfaces
         /// </summary>
         /// <param name="entities"></param>
         /// <returns></returns>
-        void RemoveRange(IEnumerable<TModelBase> entities, CancellationToken cancellationToken);
+        Task RemoveRange(IEnumerable<TModelBase> entities, CancellationToken cancellationToken);
 
         /// <summary>
         /// Get One Object Based On id
@@ -68,12 +66,22 @@ namespace EShop.Domain.Interfaces
         /// <returns></returns>
         Task<TModelBase?> GetAsync(Guid id, CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Get One Object Based On id Without Include
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<TModelBase?> GetWithoutIncludeAsync(Guid id, CancellationToken cancellationToken);
+
+
 
         /// <summary>
         /// Get A List Of Objects
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<TModelBase>> GetListAsync(CancellationToken cancellationToken);
+        Task<PaginatedResult<TModelBase>> GetListAsync(TFilter filter, CancellationToken cancellationToken);
+
 
     }
 }

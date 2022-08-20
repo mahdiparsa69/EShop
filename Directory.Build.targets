@@ -5,6 +5,7 @@
 		<PackageReference Update="System.Diagnostics.Tracing" Version="4.3.0" />
 		<PackageReference Update="System.ServiceModel.Http" Version="4.9.0" />
 		<PackageReference Update="AutoMapper" Version="11.0.1" />
+		<PackageReference Update="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
 		<PackageReference Update="Sentry.Extensions.Logging" Version="3.19.0"/>
 		<PackageReference Update="System.Text.Json" Version="6.0.5" />
 		<PackageReference Update="Polly" Version="7.2.3" />

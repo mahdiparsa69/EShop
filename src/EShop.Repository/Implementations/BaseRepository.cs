@@ -1,16 +1,30 @@
-﻿using EShop.Domain.Interfaces;
+﻿using EShop.Domain.Common;
+using EShop.Domain.Filters;
+using EShop.Domain.Interfaces;
 using EShop.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace EShop.Repository.Implementations
 {
-    public abstract class BaseRepository<TModelBase> : IBaseRepository<TModelBase>
+    public abstract class BaseRepository<TModelBase, TFilter> : IBaseRepository<TModelBase, TFilter>
         where TModelBase : BaseModel
+        where TFilter : struct, IListFilter
     {
         private readonly EShopDbContext _dbContext;
 
         private readonly DbSet<TModelBase> _dbSet;
+
+        public virtual IQueryable<TModelBase> DefaultSortFunc(IQueryable<TModelBase> query)
+        {
+            return query.OrderByDescending(x => x.SeqId);
+        }
+
+        public abstract IQueryable<TModelBase> ApplyFilter(IQueryable<TModelBase> query, TFilter filter);
+
+        public abstract IQueryable<TModelBase> ConfigureInclude(IQueryable<TModelBase> query);
+
+        public abstract IQueryable<TModelBase> ConfigureListInclude(IQueryable<TModelBase> query);
 
         public BaseRepository(EShopDbContext dbContext)
         {
@@ -19,7 +33,7 @@ namespace EShop.Repository.Implementations
             _dbSet = _dbContext.Set<TModelBase>();
         }
 
-        public async Task AddAsync(TModelBase entity, CancellationToken cancellationToken)
+        public virtual async Task AddAsync(TModelBase entity, CancellationToken cancellationToken)
         {
             if (entity == null)
                 throw new ArgumentNullException($"{nameof(entity)} is null");
@@ -32,7 +46,7 @@ namespace EShop.Repository.Implementations
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task AddRangeAsync(IEnumerable<TModelBase> entities, CancellationToken cancellationToken)
+        public virtual async Task AddRangeAsync(IEnumerable<TModelBase> entities, CancellationToken cancellationToken)
         {
 
             if (entities == null)
@@ -51,8 +65,9 @@ namespace EShop.Repository.Implementations
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public void Update(TModelBase entity, CancellationToken cancellationToken)
+        public virtual async Task Update(TModelBase entity, CancellationToken cancellationToken)
         {
+
             if (entity == null)
                 throw new ArgumentNullException($"{nameof(entity)}  is Null");
 
@@ -62,16 +77,17 @@ namespace EShop.Repository.Implementations
                 entry = _dbSet.Attach(entity);
 
             entry.Property(x => x.SeqId).IsModified = false;
+
             entry.Property(x => x.CreatedAt).IsModified = false;
 
-            entity.ModifiedAt = DateTimeOffset.Now;
+            entity.ModifiedAt = DateTime.UtcNow;
 
             _dbSet.Update(entity);
 
-            _dbContext.SaveChangesAsync(cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public void UpdateRange(IEnumerable<TModelBase> entities, CancellationToken cancellationToken)
+        public virtual async Task UpdateRange(IEnumerable<TModelBase> entities, CancellationToken cancellationToken)
         {
             if (entities == null)
                 throw new ArgumentNullException($"{nameof(entities)} are null");
@@ -93,12 +109,13 @@ namespace EShop.Repository.Implementations
 
                 entity.ModifiedAt = DateTimeOffset.Now;
             }
+
             _dbSet.UpdateRange(entities);
             _dbContext.SaveChangesAsync(cancellationToken);
 
         }
 
-        public void Remove(TModelBase entity, CancellationToken cancellationToken)
+        public virtual async Task Remove(TModelBase entity, CancellationToken cancellationToken)
         {
             if (entity == null)
                 throw new ArgumentNullException($"{nameof(entity)}  is Null");
@@ -110,17 +127,18 @@ namespace EShop.Repository.Implementations
 
             entity.IsDeleted = true;
 
-            entity.DeletedAt = DateTimeOffset.Now;
+            //entity.DeletedAt = DateTimeOffset.Now;
+            entity.DeletedAt = DateTime.UtcNow;
 
-            _dbContext.SaveChangesAsync(cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task Remove(Guid id, CancellationToken cancellationToken)
+        public virtual async Task Remove(Guid id, CancellationToken cancellationToken)
         {
             if (id == default)
-                throw new ArgumentNullException($"Id is Null Cannot remove");
+                throw new ArgumentNullException($"Id is Null. Cannot remove");
 
-            var entity = await GetAsync(id, cancellationToken);
+            var entity = await GetWithoutIncludeAsync(id, cancellationToken);
 
             if (entity == null)
                 throw new Exception($"There is no object with given id:{id} in database");
@@ -128,7 +146,7 @@ namespace EShop.Repository.Implementations
             Remove(entity, cancellationToken);
         }
 
-        public void RemoveRange(IEnumerable<TModelBase> entities, CancellationToken cancellationToken)
+        public virtual async Task RemoveRange(IEnumerable<TModelBase> entities, CancellationToken cancellationToken)
         {
             if (entities == null)
             {
@@ -157,21 +175,45 @@ namespace EShop.Repository.Implementations
             _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-
-
-        public Task<TModelBase> GetAsync(Guid id, CancellationToken cancellationToken)
+        public virtual Task<TModelBase> GetAsync(Guid id, CancellationToken cancellationToken)
         {
             return _dbSet
+                .Apply(ConfigureInclude)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
 
-        public async Task<IEnumerable<TModelBase>> GetListAsync(CancellationToken cancellationToken)
+        public async Task<TModelBase?> GetWithoutIncludeAsync(Guid id, CancellationToken cancellationToken)
         {
-            var entities = await _dbSet
+            var result = await _dbSet
                 .AsNoTracking()
-                .ToListAsync(cancellationToken);
-            return entities;
+                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+            return result;
         }
+
+        public virtual async Task<PaginatedResult<TModelBase>> GetListAsync(TFilter filter, CancellationToken cancellationToken)
+        {
+            var query = _dbSet.AsNoTracking().AsQueryable();
+
+            query = ApplyFilter(query, filter);
+
+            query = query
+                .Apply(ConfigureListInclude)
+                .AsNoTracking()
+                .Apply(DefaultSortFunc)
+                .Skip(filter.Offset)
+                .Take(filter.Count);
+
+            var result = new PaginatedResult<TModelBase>
+            {
+                Items = await query.ToListAsync(cancellationToken),
+                TotalCount = await query.CountAsync(cancellationToken)
+            };
+            return result;
+        }
+
+
+
     }
 }
