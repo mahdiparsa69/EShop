@@ -15,13 +15,32 @@ namespace EShop.Api.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
+        private readonly IRedisCacheService _redisCacheService;
         private readonly IMapper _mapper;
 
-        public ProductController(IProductRepository productRepository, IMapper mapper)
+        public ProductController(IProductRepository productRepository, IMapper mapper, IRedisCacheService redisCacheService)
         {
             _productRepository = productRepository;
 
             _mapper = mapper;
+
+            _redisCacheService = redisCacheService;
+        }
+
+        [HttpGet("GetFromRedis")]
+        public IActionResult GetFromRedis([FromQuery] string key)
+        {
+            var value = _redisCacheService.Get(key);
+
+            return Ok(value);
+        }
+
+        [HttpPost("SetToRedis")]
+        public IActionResult SetToRedis([FromQuery] string key, [FromQuery] string value)
+        {
+            var result = _redisCacheService.Set(key, value);
+
+            return Ok(result);
         }
 
         [HttpPost]
@@ -36,7 +55,7 @@ namespace EShop.Api.Controllers
             return Ok(productViewModel);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetWithoutIncludeAsync([FromRoute] Guid id)
         {
             if (id == default)
@@ -95,9 +114,7 @@ namespace EShop.Api.Controllers
             var product = await _productRepository.GetWithoutIncludeAsync(id, HttpContext.RequestAborted);
 
             if (product == null)
-            {
                 return NotFound();
-            }
 
             _mapper.Map<ProductUpdateRequest, Product>(productUpdateRequest, product);
 
@@ -106,8 +123,8 @@ namespace EShop.Api.Controllers
             var productViewModel = _mapper.Map<Product, ProductViewModel>(product);
 
             return Ok(productViewModel);
-
-            //return Ok($"Product {product.Name}:{product.Id} Updated Successfully");
         }
+
+
     }
 }

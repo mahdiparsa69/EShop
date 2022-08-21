@@ -8,6 +8,7 @@ using EShop.Repository.Implementations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 
 namespace EShop.Repository
 {
@@ -19,12 +20,17 @@ namespace EShop.Repository
             services.AddDbContextPool<EShopDbContext>(options =>
             {
                 options.UseNpgsql(configuration.GetSection("EShopDatabase").Value);
+
                 options.UseSnakeCaseNamingConvention();
+
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
             }, 1024);
 
-            // services.AddScoped<IBaseRepository<Product,ProductFilter>,BaseRepository<Product, ProductFilter> > ();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+
+            services.AddSingleton<IRedisCacheService, RedisCacheService>();
+
 
             //services.AddAutoMapper(typeof(Program));
 

@@ -9,7 +9,6 @@ namespace EShop.Api.Models.RequestModels
 
         public int AvailableCount { get; set; }
 
-        [Required]
         public long Price { get; set; }
 
         public byte? DiscountPercent { get; set; }

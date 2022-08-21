@@ -24,17 +24,21 @@ namespace EShop.Repository.Implementations
 */
         public override IQueryable<Order> ApplyFilter(IQueryable<Order> query, OrderFilter filter)
         {
-            throw new NotImplementedException();
+            /*if (!string.IsNullOrEmpty(filter.Name))
+            {
+                query = query.Where(x => x.Name == filter.Name);
+            }*/
+            return query;
         }
 
         public override IQueryable<Order> ConfigureInclude(IQueryable<Order> query)
         {
-            throw new NotImplementedException();
+            return query;
         }
 
         public override IQueryable<Order> ConfigureListInclude(IQueryable<Order> query)
         {
-            throw new NotImplementedException();
+            return query;
         }
     }
 }
