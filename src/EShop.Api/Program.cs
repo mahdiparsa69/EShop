@@ -1,11 +1,16 @@
 using EShop.Repository;
+using EShop.Service;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEShopRepositories(builder.Configuration.GetSection("ConnectionStrings"));
+
+builder.Services.AddEShopServices();
+
 builder.Services.AddAutoMapper(typeof(Program));
+
 var multiplexer = ConnectionMultiplexer.Connect(builder.Configuration.GetSection("RedisConnection").Value);
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(multiplexer);

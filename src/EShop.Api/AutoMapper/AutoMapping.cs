@@ -10,9 +10,10 @@ namespace EShop.Api.AutoMapper
     {
         public AutoMapping()
         {
-            CreateMap<ProductUpdateRequest,Product>();
+            CreateMap<ProductUpdateRequest, Product>();
             CreateMap<Product, ProductCreateRequest>();
             CreateMap<Product, ProductViewModel>();
+            CreateMap<Order, OrderCompactViewModel>();
         }
     }
 }

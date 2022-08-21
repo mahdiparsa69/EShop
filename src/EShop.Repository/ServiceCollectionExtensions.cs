@@ -27,9 +27,10 @@ namespace EShop.Repository
             }, 1024);
 
             services.AddScoped<IProductRepository, ProductRepository>();
+
             services.AddScoped<IOrderRepository, OrderRepository>();
 
-            services.AddSingleton<IRedisCacheService, RedisCacheService>();
+
 
 
             //services.AddAutoMapper(typeof(Program));

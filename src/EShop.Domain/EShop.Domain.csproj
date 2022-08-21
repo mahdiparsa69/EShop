@@ -10,7 +10,6 @@
 		<Compile Remove="Interfaces\**" />
 		<EmbeddedResource Remove="Interfaces\**" />
 		<Compile Include="Interfaces\IOrderItemRepository.cs" />
-		<Compile Include="Interfaces\IRedisCacheService.cs" />
 		<Compile Include="Interfaces\IUserRepository.cs" />
 		<Compile Include="Interfaces\ITransactionRepository.cs" />
 		<Compile Include="Interfaces\IProductRepository.cs" />

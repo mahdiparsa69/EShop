@@ -6,6 +6,7 @@ using EShop.Domain.Filters;
 using EShop.Domain.Interfaces;
 using EShop.Domain.Models;
 using EShop.Repository.Implementations;
+using EShop.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EShop.Api.Controllers
@@ -28,20 +29,41 @@ namespace EShop.Api.Controllers
         }
 
         [HttpGet("GetFromRedis")]
-        public IActionResult GetFromRedis([FromQuery] string key)
+        public async Task<IActionResult> GetFromRedis()
         {
-            var value = _redisCacheService.Get(key);
+            var cachedData = await _redisCacheService.FetchAsync<List<Product>>("product");
 
-            return Ok(value);
+            if (cachedData != null)
+            {
+                var cachedProduct = _mapper.Map<List<Product>, List<ProductViewModel>>(cachedData);
+                return Ok(cachedProduct);
+            }
+
+            var expirationTime = DateTimeOffset.Now.AddMinutes(2.0);
+
+            var productFromDb = await _productRepository.GetListAsync(new ProductFilter()
+            {
+                Offset = 0,
+                Count = int.MaxValue
+            }, HttpContext.RequestAborted);
+
+            if (productFromDb.Items == null)
+                return default;
+
+            _redisCacheService.StoreAsync<List<Product>>("product", productFromDb.Items, expirationTime);
+
+            var result = _mapper.Map<List<Product>, List<ProductViewModel>>(productFromDb.Items);
+
+            return Ok(result);
         }
 
-        [HttpPost("SetToRedis")]
+        /*[HttpPost("SetToRedis")]
         public IActionResult SetToRedis([FromQuery] string key, [FromQuery] string value)
         {
             var result = _redisCacheService.Set(key, value);
 
             return Ok(result);
-        }
+        }*/
 
         [HttpPost]
         public async Task<IActionResult> AddAsync([FromBody] ProductCreateRequest productCreateRequest)

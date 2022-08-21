@@ -12,6 +12,7 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" />
+		<PackageReference Include="Newtonsoft.Json" />
 		<!--Redis-->
 		<PackageReference Include="StackExchange.Redis"/>
 	</ItemGroup>
