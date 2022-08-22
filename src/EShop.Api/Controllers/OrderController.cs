@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EShop.Api.Models.RequstModels;
 using EShop.Api.Models.ViewModels;
 using EShop.Domain.Filters;
 using EShop.Domain.Interfaces;
@@ -39,7 +40,8 @@ namespace EShop.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetListAsync([FromQuery] string? name, [FromQuery] int offset = 0, [FromQuery] int count = 10)
+        public async Task<IActionResult> GetListAsync([FromQuery] string? name, [FromQuery] int offset = 0,
+            [FromQuery] int count = 10)
         {
             var orderFilter = new OrderFilter()
             {
@@ -55,6 +57,36 @@ namespace EShop.Api.Controllers
             var result = _mapper.Map<List<Order>, List<OrderCompactViewModel>>(orders.Items);
 
             return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddAsync([FromBody] OrderCreateRequest orderCreateRequest)
+        {
+            if (orderCreateRequest == null)
+                return BadRequest();
+
+            var order = _mapper.Map<Order>(orderCreateRequest);
+
+            await _orderRepository.AddAsync(order, HttpContext.RequestAborted);
+
+            var orderViewModel = _mapper.Map<Order, OrderCompactViewModel>(order);
+            return Ok(orderViewModel);
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
+        {
+            if (id == default)
+                return BadRequest();
+
+            var order = await _orderRepository.GetWithoutIncludeAsync(id, HttpContext.RequestAborted);
+
+            if (order == null)
+                return NotFound();
+
+            _orderRepository.Remove(id, HttpContext.RequestAborted);
+
+            return Ok();
         }
     }
 }

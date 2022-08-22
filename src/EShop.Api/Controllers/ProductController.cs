@@ -16,8 +16,14 @@ namespace EShop.Api.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
+
         private readonly IRedisCacheService _redisCacheService;
+
         private readonly IMapper _mapper;
+
+
+
+
 
         public ProductController(IProductRepository productRepository, IMapper mapper, IRedisCacheService redisCacheService)
         {
@@ -31,30 +37,37 @@ namespace EShop.Api.Controllers
         [HttpGet("GetFromRedis")]
         public async Task<IActionResult> GetFromRedis()
         {
-            var cachedData = await _redisCacheService.FetchAsync<List<Product>>("product");
+            var cachedData = await _redisCacheService.FetchAsync("product", () =>
+                _productRepository.GetListAsync(new ProductFilter()
+                {
+                    Offset = 0,
+                    Count = int.MaxValue
+                }, HttpContext.RequestAborted), TimeSpan.FromHours(2.0));
 
             if (cachedData != null)
             {
-                var cachedProduct = _mapper.Map<List<Product>, List<ProductViewModel>>(cachedData);
+                var cachedProduct = _mapper.Map<List<Product>, List<ProductViewModel>>(cachedData.Items);
                 return Ok(cachedProduct);
             }
+            /*
+                        var expirationTime = DateTimeOffset.Now.AddHours(2.0);
 
-            var expirationTime = DateTimeOffset.Now.AddMinutes(2.0);
 
-            var productFromDb = await _productRepository.GetListAsync(new ProductFilter()
-            {
-                Offset = 0,
-                Count = int.MaxValue
-            }, HttpContext.RequestAborted);
+                        var productFromDb = await _productRepository.GetListAsync(new ProductFilter()
+                        {
+                            Offset = 0,
+                            Count = int.MaxValue
+                        }, HttpContext.RequestAborted);
 
-            if (productFromDb.Items == null)
-                return default;
+                        if (productFromDb.Items == null)
+                            return default;
 
-            _redisCacheService.StoreAsync<List<Product>>("product", productFromDb.Items, expirationTime);
+                        _redisCacheService.StoreAsync<List<Product>>("product", productFromDb.Items, expirationTime);
 
-            var result = _mapper.Map<List<Product>, List<ProductViewModel>>(productFromDb.Items);
+                        var result = _mapper.Map<List<Product>, List<ProductViewModel>>(productFromDb.Items);*/
 
-            return Ok(result);
+            //return Ok(result);
+            return default;
         }
 
         /*[HttpPost("SetToRedis")]
