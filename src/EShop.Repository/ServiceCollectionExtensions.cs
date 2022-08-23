@@ -29,6 +29,8 @@ namespace EShop.Repository
             services.AddScoped<IProductRepository, ProductRepository>();
 
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
 
 
 

@@ -24,6 +24,6 @@ namespace EShop.Domain.Models
 
         public string ErrorMessage { get; set; }
 
-        public string PaymentCode { get; set; }
+        public string? PaymentCode { get; set; }
     }
 }

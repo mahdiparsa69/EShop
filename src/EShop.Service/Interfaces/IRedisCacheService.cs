@@ -19,7 +19,7 @@ namespace EShop.Service.Interfaces
         Task<T> FetchAsync<T>(string key);
 
         /// <summary>
-        /// Get Data From Redis with getting data from db
+        /// Get Data From Redis with getting data from db By Func Delegate
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
