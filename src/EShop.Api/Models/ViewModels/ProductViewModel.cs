@@ -1,6 +1,6 @@
 ﻿namespace EShop.Api.Models.ViewModels
 {
-    public class ProductViewModel
+    public class ProductViewModel : BaseViewModel
     {
         public string Name { get; set; }
 
@@ -10,6 +10,6 @@
 
         public byte? DiscountPercent { get; set; }
 
-        public DateTimeOffset CreatedAt { get; set; }
+
     }
 }

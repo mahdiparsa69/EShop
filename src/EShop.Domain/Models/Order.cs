@@ -11,9 +11,9 @@ namespace EShop.Domain.Models
 
         public long TotalAmount { get; set; }
 
-        public long FinalAmount { get; set; }
-
         public long DiscountAmount { get; set; }
+
+        public long FinalAmount { get; set; }
 
         public List<OrderItem> OrderItems { get; set; }
 

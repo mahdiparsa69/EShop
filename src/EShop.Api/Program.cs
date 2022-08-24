@@ -14,6 +14,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 var multiplexer = ConnectionMultiplexer.Connect(builder.Configuration.GetSection("RedisConnection").Value);
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(multiplexer);
+
 // Add services to the container.
 
 builder.Services.AddControllers();
