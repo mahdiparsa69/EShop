@@ -49,34 +49,8 @@ namespace EShop.Api.Controllers
                 var cachedProduct = _mapper.Map<List<Product>, List<ProductViewModel>>(cachedData.Items);
                 return Ok(cachedProduct);
             }
-            /*
-                        var expirationTime = DateTimeOffset.Now.AddHours(2.0);
-
-
-                        var productFromDb = await _productRepository.GetListAsync(new ProductFilter()
-                        {
-                            Offset = 0,
-                            Count = int.MaxValue
-                        }, HttpContext.RequestAborted);
-
-                        if (productFromDb.Items == null)
-                            return default;
-
-                        _redisCacheService.StoreAsync<List<Product>>("product", productFromDb.Items, expirationTime);
-
-                        var result = _mapper.Map<List<Product>, List<ProductViewModel>>(productFromDb.Items);*/
-
-            //return Ok(result);
-            return default;
+            return NotFound("Item Not Fount");
         }
-
-        /*[HttpPost("SetToRedis")]
-        public IActionResult SetToRedis([FromQuery] string key, [FromQuery] string value)
-        {
-            var result = _redisCacheService.Set(key, value);
-
-            return Ok(result);
-        }*/
 
         [HttpPost]
         public async Task<IActionResult> AddAsync([FromBody] ProductCreateRequest productCreateRequest)

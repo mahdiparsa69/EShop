@@ -16,4 +16,10 @@
 		<ProjectReference Include="..\EShop.Service\EShop.Service.csproj" />
 	</ItemGroup>
 
-		</Project>
+	<ItemGroup>
+		<Content Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+</Project>
