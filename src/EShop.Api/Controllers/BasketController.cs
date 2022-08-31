@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using EasyNetQ;
 using EShop.Api.Models;
 using EShop.Api.Models.RequstModels;
 using EShop.Api.Models.ViewModels;
+using EShop.Domain.Common.BrokerMessages;
 using EShop.Domain.Enums;
 using EShop.Domain.Interfaces;
 using EShop.Domain.Models;
@@ -21,13 +23,15 @@ namespace EShop.Api.Controllers
         private readonly IOrderItemRepository _orderItemRepository;
         private readonly ITransactionRepository _transactionRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IBus _bus;
+        private readonly IAsyncJobProducer _asyncJobProducer;
         private readonly IMapper _mapper;
 
         public BasketController(IRedisCacheService redisCacheService,
             IOrderRepository orderRepository,
             ITransactionRepository transactionRepository,
             IOrderItemRepository orderItemRepository,
-            IProductRepository productRepository, IMapper mapper)
+            IProductRepository productRepository, IMapper mapper, IBus bus, IAsyncJobProducer asyncJobProducer)
         {
             _redisCacheService = redisCacheService;
             _orderRepository = orderRepository;
@@ -35,6 +39,8 @@ namespace EShop.Api.Controllers
             _orderItemRepository = orderItemRepository;
             _productRepository = productRepository;
             _mapper = mapper;
+            _bus = bus;
+            _asyncJobProducer = asyncJobProducer;
         }
 
 
@@ -228,6 +234,13 @@ namespace EShop.Api.Controllers
                     UserId = order.UserId,
                 };
 
+
+                TransactionMessage tx = new TransactionMessage();
+                tx.TextMsg = $"New Transaction Add.Id is : {transaction.Id}";
+                _asyncJobProducer.PublishAsync(tx, HttpContext.RequestAborted);
+                Console.WriteLine("*********************Message Published!!!**********************************");
+
+
                 if (transaction.Status == TransactionStatus.Successful)
                 {
                     order.IsPaid = true;
@@ -251,5 +264,7 @@ namespace EShop.Api.Controllers
             return BadRequest("Order Can Not Payed Two Times.It is payed before ");
 
         }
+
+
     }
 }

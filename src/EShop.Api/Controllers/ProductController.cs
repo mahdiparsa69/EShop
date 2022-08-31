@@ -7,6 +7,7 @@ using EShop.Domain.Interfaces;
 using EShop.Domain.Models;
 using EShop.Repository.Implementations;
 using EShop.Service.Interfaces;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EShop.Api.Controllers
@@ -58,6 +59,8 @@ namespace EShop.Api.Controllers
             var product = _mapper.Map<Product>(productCreateRequest);
 
             await _productRepository.AddAsync(product, HttpContext.RequestAborted);
+
+            BackgroundJob.Enqueue(() => Console.WriteLine($"Product {product.Name} with ID {product.Id} Inserted to database"));
 
             var productViewModel = _mapper.Map<Product, ProductViewModel>(product);
 

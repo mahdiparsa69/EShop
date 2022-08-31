@@ -14,8 +14,14 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\EShop.Repository\EShop.Repository.csproj" />
+		<PackageReference Include="EasyNetQ" />
 		<PackageReference Include="Microsoft.Extensions.Options" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+
+		<PackageReference Include="Hangfire" />
+		<PackageReference Include="Hangfire.Core" />
+		<PackageReference Include="Hangfire.AspNetCore" />
+		<PackageReference Include="Hangfire.PostgreSql" />
 	</ItemGroup>
 
 </Project>

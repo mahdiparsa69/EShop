@@ -1,5 +1,13 @@
+using EasyNetQ;
+using EShop.Api;
+using EShop.Api.Consumers;
+using EShop.Domain.Common.BrokerMessages;
 using EShop.Repository;
 using EShop.Service;
+using EShop.Service.Interfaces;
+using Hangfire;
+using Hangfire.Common;
+using Hangfire.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
@@ -15,13 +23,22 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddControllers();
 
-var app = builder.Build();
+//builder.Services.AddHostedService<TransactionState>();
 
+/*
+builder.Services.AddSingleton<IAsyncJobConsumer<TransactionMessage>, TransactionMessageConsumer>();
+
+builder.Services.AddHostedService<TransactionMessageConsumerHost>();*/
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseHangfireServer();
+app.UseHangfireDashboard("/hangfire");
 
 app.Run();

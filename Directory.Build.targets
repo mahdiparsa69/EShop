@@ -9,7 +9,7 @@
 		<PackageReference Update="Sentry.Extensions.Logging" Version="3.19.0"/>
 		<PackageReference Update="System.Text.Json" Version="6.0.5" />
 		<PackageReference Update="Polly" Version="7.2.3" />
-		<PackageReference Update="EasyNetQ" Version="6.5.2" />
+		<PackageReference Update="EasyNetQ" Version="7.0.1" />
 		<PackageReference Update="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Update="Swashbuckle.AspNetCore" Version="5.4.1" />
 		<PackageReference Update="Swashbuckle.AspNetCore.Filters" Version="7.0.3" />
@@ -35,11 +35,10 @@
 		<PackageReference Update="WildcardMatch" Version="1.0.7" />
 
 		<!--HangFire packages-->
-		<PackageReference Update="Hangfire" Version="1.7.30" />
-		<PackageReference Update="Hangfire.Core" Version="1.7.30" />
-		<PackageReference Update="Hangfire.AspNetCore" Version="1.7.30" />
+		<PackageReference Update="Hangfire" Version="1.7.31" />
+		<PackageReference Update="Hangfire.Core" Version="1.7.31" />
+		<PackageReference Update="Hangfire.AspNetCore" Version="1.7.31" />
 		<PackageReference Update="Hangfire.PostgreSql" Version="1.9.8" />
-
 		<!--Hydra Bitbaan package manager-->
 		<PackageReference Update="Hydra.AspDotnetHelper" Version="0.1.1" />
 		<PackageReference Update="Hydra.CacheHelper" Version="0.1.0" />
@@ -102,6 +101,7 @@
 		<PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.6" />
 		<PackageReference Update="Microsoft.Diagnostics.Tracing.TraceEvent" Version="3.0.2" />
 		<PackageReference Update="Microsoft.EntityFrameworkCore.Tools" Version="6.0.8" />
+		<PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
 
 
 
