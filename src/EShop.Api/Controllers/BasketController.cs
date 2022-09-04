@@ -5,12 +5,11 @@ using EShop.Api.Models.RequstModels;
 using EShop.Api.Models.ViewModels;
 using EShop.Domain.Common.BrokerMessages;
 using EShop.Domain.Enums;
+using EShop.Domain.Filters;
 using EShop.Domain.Interfaces;
 using EShop.Domain.Models;
 using EShop.Service.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace EShop.Api.Controllers
 {
@@ -85,6 +84,7 @@ namespace EShop.Api.Controllers
                 basket.TotalAmount = basketItem.FinalAmount;
 
                 basket.BasketItems.Add(basketItem);
+
                 basket.DiscountAmount = basketItem.DiscountAmount;
 
                 await _redisCacheService.StoreAsync(basketCacheKey, basket, TimeSpan.FromHours(2));
@@ -115,12 +115,14 @@ namespace EShop.Api.Controllers
                             ? (long)(product.Price * product.DiscountPercent * request.Count) / 100
                             : 0,
                     };
+
                     basketItem.FinalAmount = basketItem.Amount - basketItem.DiscountAmount;
+
                     cachedBasket.BasketItems.Add(basketItem);
-                    //cachedBasket.TotalAmount = cachedBasket.BasketItems.Sum(x => x.FinalAmount);
                 }
 
                 cachedBasket.TotalAmount = cachedBasket.BasketItems.Sum(x => x.FinalAmount);
+
                 cachedBasket.DiscountAmount = cachedBasket.BasketItems.Sum(x => x.DiscountAmount);
 
                 await _redisCacheService.StoreAsync(basketCacheKey, cachedBasket, TimeSpan.FromHours(2));
@@ -265,6 +267,24 @@ namespace EShop.Api.Controllers
 
         }
 
+        [HttpGet("gettransactions")]
+        public async Task<IActionResult> GetListTransactionAsync([FromQuery] int offset = 0, [FromQuery] int count = 10)
+        {
+            TransactionFilter filter = new TransactionFilter()
+            {
+                Offset = offset,
+                Count = count
+            };
+
+            var transactions = await _transactionRepository.GetListAsync(filter, HttpContext.RequestAborted);
+
+            if (transactions.Items == null)
+                return default;
+
+            var result = _mapper.Map<List<Transaction>, List<TransactionViewModel>>(transactions.Items);
+
+            return Ok(result);
+        }
 
     }
 }

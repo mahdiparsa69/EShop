@@ -1,5 +1,4 @@
-﻿
-namespace EShop.Domain.Models
+﻿namespace EShop.Domain.Models
 {
     public class Order : BaseModel
     {

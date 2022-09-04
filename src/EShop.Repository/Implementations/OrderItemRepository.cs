@@ -15,17 +15,17 @@ namespace EShop.Repository.Implementations
 
         public override IQueryable<OrderItem> ApplyFilter(IQueryable<OrderItem> query, OrderItemFilter filter)
         {
-            throw new NotImplementedException();
+            return query;
         }
 
         public override IQueryable<OrderItem> ConfigureInclude(IQueryable<OrderItem> query)
         {
-            throw new NotImplementedException();
+            return query;
         }
 
         public override IQueryable<OrderItem> ConfigureListInclude(IQueryable<OrderItem> query)
         {
-            throw new NotImplementedException();
+            return query;
         }
     }
 }

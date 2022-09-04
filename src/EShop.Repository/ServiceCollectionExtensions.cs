@@ -34,6 +34,8 @@ namespace EShop.Repository
 
             services.AddScoped<ITransactionRepository, TransactionRepository>();
 
+            services.AddScoped<IUserRepository, UserRepository>();
+
             //services.AddAutoMapper(typeof(Program));
         }
     }

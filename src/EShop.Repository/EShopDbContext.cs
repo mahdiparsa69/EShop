@@ -18,6 +18,7 @@ public class EShopDbContext : DbContext
         modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
         modelBuilder.ApplyConfiguration(new TransactionConfiguration());
         modelBuilder.ApplyConfiguration(new UserConfiguration());
+
         //modelBuilder.ForNpgsqlUseXminAsConcurrencyToken();
 
         /*base.OnModelCreating(modelBuilder);

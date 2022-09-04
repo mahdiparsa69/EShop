@@ -1,5 +1,4 @@
-﻿using System.Xml.Schema;
-using EShop.Domain.Models;
+﻿using EShop.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

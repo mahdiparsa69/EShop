@@ -1,5 +1,4 @@
 ﻿using EasyNetQ;
-using EShop.Domain.Common.BrokerMessages;
 using EShop.Service.Implementations;
 using EShop.Service.Interfaces;
 using Hangfire;
@@ -23,6 +22,8 @@ namespace EShop.Service
             services.AddScoped<IRedisCacheService, RedisCacheService>();
 
             services.AddScoped<IAsyncJobProducer, AsyncJobProducer>();
+
+            services.AddScoped<ITokenService, TokenService>();
 
             services.AddSingleton<IBus>(RabbitHutch.CreateBus("host=127.0.0.1,port=5672"));
 

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EasyNetQ;
+﻿using EasyNetQ;
 using EShop.Domain.Common.BrokerMessages;
-using EShop.Domain.Enums;
 using EShop.Service.Interfaces;
 
 namespace EShop.Service.Implementations

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EShop.Service.Interfaces;
+﻿using EShop.Service.Interfaces;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 

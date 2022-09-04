@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EShop.Domain.Filters;
+﻿using EShop.Domain.Filters;
 using EShop.Domain.Interfaces;
 using EShop.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EShop.Repository.Implementations
 {
@@ -20,17 +16,30 @@ namespace EShop.Repository.Implementations
 
         public override IQueryable<User> ApplyFilter(IQueryable<User> query, UserFilter filter)
         {
-            throw new NotImplementedException();
+            if (!string.IsNullOrWhiteSpace(filter.Username))
+            {
+                query = query.Where(x => x.Username == filter.Username);
+                return query;
+            }
+
+            return query;
         }
 
         public override IQueryable<User> ConfigureInclude(IQueryable<User> query)
         {
-            throw new NotImplementedException();
+            return query;
         }
 
         public override IQueryable<User> ConfigureListInclude(IQueryable<User> query)
         {
-            throw new NotImplementedException();
+            return query;
+        }
+
+        public Task<User> GetUser(User user)
+        {
+            var userFromDb = _dbContext.Users.FirstOrDefaultAsync(x => x.Username == user.Username && x.Password == user.Password);
+
+            return userFromDb;
         }
     }
 }

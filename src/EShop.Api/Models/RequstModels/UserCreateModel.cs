@@ -1,9 +1,9 @@
-﻿using EShop.Domain.Enums;
-
-namespace EShop.Domain.Models
+﻿namespace EShop.Api.Models.RequstModels
 {
-    public class User : BaseModel
+    public class UserCreateModel
     {
+        public Guid Id { get; set; }
+
         public string Username { get; set; }
 
         public string Password { get; set; }
@@ -15,11 +15,5 @@ namespace EShop.Domain.Models
         public string Msisdn { get; set; }
 
         public string Address { get; set; }
-
-        public UserStatus Status { get; set; }
-
-        public List<Order> Orders { get; set; }
-
-        public List<Transaction> Transactions { get; set; }
     }
 }

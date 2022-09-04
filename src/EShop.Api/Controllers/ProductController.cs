@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using EShop.Api.Models.RequestModels;
 using EShop.Api.Models.ViewModels;
-using EShop.Domain.Common;
 using EShop.Domain.Filters;
 using EShop.Domain.Interfaces;
 using EShop.Domain.Models;
-using EShop.Repository.Implementations;
 using EShop.Service.Interfaces;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
@@ -21,11 +19,6 @@ namespace EShop.Api.Controllers
         private readonly IRedisCacheService _redisCacheService;
 
         private readonly IMapper _mapper;
-
-
-
-
-
         public ProductController(IProductRepository productRepository, IMapper mapper, IRedisCacheService redisCacheService)
         {
             _productRepository = productRepository;
@@ -50,6 +43,7 @@ namespace EShop.Api.Controllers
                 var cachedProduct = _mapper.Map<List<Product>, List<ProductViewModel>>(cachedData.Items);
                 return Ok(cachedProduct);
             }
+
             return NotFound("Item Not Fount");
         }
 

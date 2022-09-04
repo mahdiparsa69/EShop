@@ -7,12 +7,11 @@ namespace EShop.Domain.Interfaces
     public interface IBaseRepository<TModelBase, TFilter> where TModelBase : BaseModel
         where TFilter : struct, IListFilter
     {
-        //todo add cancellation to repository
-
         /// <summary>
         /// Create One Object 
         /// </summary>
         /// <param name="entity"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task AddAsync(TModelBase entity, CancellationToken cancellationToken);
 
@@ -20,6 +19,7 @@ namespace EShop.Domain.Interfaces
         /// Create More Than One Object
         /// </summary>
         /// <param name="entities"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task AddRangeAsync(IEnumerable<TModelBase> entities, CancellationToken cancellationToken);
 
@@ -27,6 +27,7 @@ namespace EShop.Domain.Interfaces
         /// Update One Object 
         /// </summary>
         /// <param name="entity"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task Update(TModelBase entity, CancellationToken cancellationToken);
 
@@ -34,6 +35,7 @@ namespace EShop.Domain.Interfaces
         /// Update More Than One Object
         /// </summary>
         /// <param name="entities"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task UpdateRange(IEnumerable<TModelBase> entities, CancellationToken cancellationToken);
 
@@ -41,6 +43,7 @@ namespace EShop.Domain.Interfaces
         /// Remove One Object 
         /// </summary>
         /// <param name="entity"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task Remove(TModelBase entity, CancellationToken cancellationToken);
 
@@ -55,6 +58,7 @@ namespace EShop.Domain.Interfaces
         /// Update More Than One Object
         /// </summary>
         /// <param name="entities"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task RemoveRange(IEnumerable<TModelBase> entities, CancellationToken cancellationToken);
 
@@ -74,14 +78,10 @@ namespace EShop.Domain.Interfaces
         /// <returns></returns>
         Task<TModelBase?> GetWithoutIncludeAsync(Guid id, CancellationToken cancellationToken);
 
-
-
         /// <summary>
         /// Get A List Of Objects
         /// </summary>
         /// <returns></returns>
         Task<PaginatedResult<TModelBase>> GetListAsync(TFilter filter, CancellationToken cancellationToken);
-
-
     }
 }

@@ -1,17 +1,12 @@
 ﻿using EShop.Domain.Enums;
 
-
-namespace EShop.Domain.Models
+namespace EShop.Api.Models.ViewModels
 {
-    public class Transaction : BaseModel
+    public class TransactionViewModel
     {
         public Guid UserId { get; set; }
 
-        public User User { get; set; }
-
         public Guid OrderId { get; set; }
-
-        public Order Order { get; set; }
 
         public long Amount { get; set; }
 
