@@ -17,10 +17,7 @@ namespace EShop.Repository.Implementations
         public override IQueryable<User> ApplyFilter(IQueryable<User> query, UserFilter filter)
         {
             if (!string.IsNullOrWhiteSpace(filter.Username))
-            {
                 query = query.Where(x => x.Username == filter.Username);
-                return query;
-            }
 
             return query;
         }
@@ -35,11 +32,9 @@ namespace EShop.Repository.Implementations
             return query;
         }
 
-        public Task<User> GetUser(User user)
+        public Task<User> GetUserByUsernameAsync(string username, CancellationToken cancellationToken)
         {
-            var userFromDb = _dbContext.Users.FirstOrDefaultAsync(x => x.Username == user.Username && x.Password == user.Password);
-
-            return userFromDb;
+            return _dbContext.Users.FirstOrDefaultAsync(x => x.Username == username, cancellationToken);
         }
     }
 }

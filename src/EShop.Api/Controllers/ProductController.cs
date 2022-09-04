@@ -48,7 +48,7 @@ namespace EShop.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAsync([FromBody] ProductCreateRequest productCreateRequest)
+        public async Task<ActionResult<ProductViewModel>> AddAsync([FromBody] ProductCreateRequest productCreateRequest)
         {
             var product = _mapper.Map<Product>(productCreateRequest);
 
@@ -62,7 +62,7 @@ namespace EShop.Api.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetWithoutIncludeAsync([FromRoute] Guid id)
+        public async Task<ActionResult<ProductViewModel>> GetWithoutIncludeAsync([FromRoute] Guid id)
         {
             if (id == default)
                 return BadRequest();
@@ -78,7 +78,7 @@ namespace EShop.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetListAsync([FromQuery] string? name, [FromQuery] int offSet = 0, [FromQuery] int count = 10)
+        public async Task<ActionResult<List<ProductViewModel>>?> GetListAsync([FromQuery] string? name, [FromQuery] int offSet = 0, [FromQuery] int count = 10)
         {
             var products = await _productRepository.GetListAsync(new ProductFilter()
             {
@@ -87,7 +87,7 @@ namespace EShop.Api.Controllers
                 Count = count
             }, HttpContext.RequestAborted);
 
-            if (products.Items == null)
+            if (!products.Items.Any())
                 return default;
 
             var result = _mapper.Map<List<Product>, List<ProductViewModel>>(products.Items);
@@ -96,7 +96,7 @@ namespace EShop.Api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Remove([FromRoute] Guid id)
+        public async Task<ActionResult> Remove([FromRoute] Guid id)
         {
             if (id == default)
                 return BadRequest();
@@ -112,7 +112,7 @@ namespace EShop.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] ProductUpdateRequest productUpdateRequest)
+        public async Task<ActionResult<ProductViewModel>> Update([FromRoute] Guid id, [FromBody] ProductUpdateRequest productUpdateRequest)
         {
             if (id == default)
                 return BadRequest();

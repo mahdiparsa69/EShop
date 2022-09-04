@@ -1,5 +1,8 @@
-﻿using AutoMapper;
+﻿using System.Security.Cryptography;
+using System.Text;
+using AutoMapper;
 using EShop.Api.Models.RequstModels;
+using EShop.Api.Models.ViewModels;
 using EShop.Domain.Common;
 using EShop.Domain.Enums;
 using EShop.Domain.Interfaces;
@@ -27,24 +30,34 @@ namespace EShop.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] UserRequestModel userRequestModel)
+        public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
         {
-            if (string.IsNullOrWhiteSpace(userRequestModel.UserName) || string.IsNullOrWhiteSpace(userRequestModel.Password))
-                return BadRequest();
 
-            var userModel = _mapper.Map<UserRequestModel, User>(userRequestModel);
+            var user = await _userRepository.GetUserByUsernameAsync(request.UserName, HttpContext.RequestAborted);
 
-            var user = await _userRepository.GetUser(userModel);
+            if (user == null)
+                return NotFound();
 
-            if (user?.Username == null) return NotFound();
+            var hashPassword = request.Password.GetSha256();
 
-            var jwtPayload = new JWTPayload();
+            if (user.Password != hashPassword)
+                return BadRequest("Username or Password is not valid");
 
-            jwtPayload.userId = user.Id;
+            var eShopAccessTokenPayload = new EShopAccessTokenPayload()
+            {
+                userId = user.Id,
+                ExpireTokenTime = DateTime.Now.AddMinutes(30)
+            };
 
-            var generatedToken = _tokenService.BuildToken(jwtPayload, _configuration["Jwt:Key"].ToString(), JwtHashAlgorithm.HS256);
+            //todo refactor tokenservice =>Done
+            var generatedToken = _tokenService.BuildToken(eShopAccessTokenPayload, JwtHashAlgorithm.HS256);
 
-            return Ok(generatedToken);
+            LoginResponse response = new LoginResponse()
+            {
+                AccessToken = generatedToken
+            };
+
+            return Ok(response);
         }
     }
 }

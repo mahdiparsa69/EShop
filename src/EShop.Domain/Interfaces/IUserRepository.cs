@@ -6,6 +6,10 @@ namespace EShop.Domain.Interfaces
 {
     public interface IUserRepository : IBaseRepository<User, UserFilter>
     {
-        public Task<User> GetUser(User user);
+        /// <summary>
+        /// Gets a user from database based on its username
+        /// </summary>
+        /// <returns></returns>
+        public Task<User> GetUserByUsernameAsync(string username, CancellationToken cancellationToken);
     }
 }

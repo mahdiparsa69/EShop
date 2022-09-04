@@ -181,7 +181,7 @@ namespace EShop.Api.Controllers
 
 
 
-        [HttpPost("finalizetoorder/{userId:guid}")]
+        [HttpPost("finalize/{userId:guid}")]
         public async Task<IActionResult> FinalizeToOrderAsync([FromRoute] Guid userId)
         {
             if (userId == default)
@@ -238,10 +238,12 @@ namespace EShop.Api.Controllers
 
 
                 TransactionMessage tx = new TransactionMessage();
-                tx.TextMsg = $"New Transaction Add.Id is : {transaction.Id}";
-                _asyncJobProducer.PublishAsync(tx, HttpContext.RequestAborted);
-                Console.WriteLine("*********************Message Published!!!**********************************");
 
+                tx.TextMessage = $"New Transaction Added. Id is : {transaction.Id}";
+
+                _asyncJobProducer.PublishAsync(tx, HttpContext.RequestAborted);
+
+                Console.WriteLine("*********************Message Published!!!**********************************");
 
                 if (transaction.Status == TransactionStatus.Successful)
                 {
@@ -267,7 +269,7 @@ namespace EShop.Api.Controllers
 
         }
 
-        [HttpGet("gettransactions")]
+        [HttpGet("transactions")]
         public async Task<IActionResult> GetListTransactionAsync([FromQuery] int offset = 0, [FromQuery] int count = 10)
         {
             TransactionFilter filter = new TransactionFilter()

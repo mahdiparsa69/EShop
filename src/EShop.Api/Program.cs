@@ -23,6 +23,8 @@ builder.Services.AddEShopServices(builder.Configuration);
 
 builder.Services.AddAutoMapper(typeof(Program));
 
+builder.Services.AddSwaggerGen();
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -36,6 +38,13 @@ app.UseCustomeExceptionHandlerMiddleware();
 //app.UseAddFieldToRequestMiddleware();
 
 app.MapControllers();
+
+app.UseSwagger();
+
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V2");
+});
 
 app.UseHangfireServer();
 

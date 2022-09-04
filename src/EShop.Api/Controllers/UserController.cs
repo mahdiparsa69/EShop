@@ -1,5 +1,8 @@
-﻿using AutoMapper;
+﻿using System.Security.Cryptography;
+using System.Text;
+using AutoMapper;
 using EShop.Api.Models.RequstModels;
+using EShop.Domain.Common;
 using EShop.Domain.Filters;
 using EShop.Domain.Interfaces;
 using EShop.Domain.Models;
@@ -19,25 +22,10 @@ namespace EShop.Api.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAsync([FromBody] UserRequestModel userRequest)
-        {
-            if (string.IsNullOrWhiteSpace(userRequest.UserName) || string.IsNullOrWhiteSpace(userRequest.Password))
-                return BadRequest("User specefication can not be null");
-
-            var user = _mapper.Map<UserRequestModel, User>(userRequest);
-
-            var userFromDb = await _userRepository.GetUser(user);
-
-            var userViewModel = _mapper.Map<User, UserViewModel>(userFromDb);
-
-            return Ok(userViewModel);
-        }
-
         [HttpGet("{userId:guid}")]
-        public async Task<IActionResult> GetAsync([FromRoute] Guid userId)
+        public async Task<ActionResult<UserViewModel>> GetAsync([FromRoute] Guid userId)
         {
-            if (userId == default || userId == null)
+            if (userId == default)
                 return BadRequest();
 
             var user = await _userRepository.GetWithoutIncludeAsync(userId, HttpContext.RequestAborted);
@@ -50,20 +38,21 @@ namespace EShop.Api.Controllers
             return Ok(userViewModel);
         }
 
-        [HttpGet("getusers")]
-        public async Task<IActionResult> GetListAsync([FromQuery] string? username, [FromQuery] int offset = 0, [FromQuery] int count = 10)
+        [HttpGet]
+        public async Task<ActionResult<List<UserViewModel>>> GetListAsync([FromQuery] string? username, [FromQuery] int offset = 0, [FromQuery] int count = 10)
         {
-            UserFilter filter = new UserFilter()
+
+            var users = await _userRepository.GetListAsync(new UserFilter
             {
                 Username = username,
                 Offset = offset,
                 Count = count
-            };
+            }, HttpContext.RequestAborted);
 
-            var users = await _userRepository.GetListAsync(filter, HttpContext.RequestAborted);
-
-            if (users.Items == null)
+            if (users?.Items == null || !users.Items.Any())
                 return default;
+
+            Response.Headers.Add("nextUrl", $"?offset={offset + count}&count={count}");
 
             var result = _mapper.Map<List<User>, List<UserViewModel>>(users.Items);
 
@@ -78,6 +67,8 @@ namespace EShop.Api.Controllers
 
             var user = _mapper.Map<UserCreateModel, User>(userCreateModel);
 
+            user.Password = userCreateModel.Password.GetSha256();
+
             await _userRepository.AddAsync(user, HttpContext.RequestAborted);
 
             var userViewModel = _mapper.Map<User, UserViewModel>(user);
@@ -86,12 +77,12 @@ namespace EShop.Api.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Remove([FromBody] UserRequestModel userRequestModel)
+        public async Task<IActionResult> Remove([FromBody] LoginRequest userRequestModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var user = _mapper.Map<UserRequestModel, User>(userRequestModel);
+            var user = _mapper.Map<LoginRequest, User>(userRequestModel);
 
             if (user == null)
                 return NotFound();
@@ -113,14 +104,14 @@ namespace EShop.Api.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] UserRequestModel userRequestModel)
+        public async Task<IActionResult> Update([FromBody] LoginRequest userRequestModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var user = _mapper.Map<UserRequestModel, User>(userRequestModel);
+            var user = _mapper.Map<LoginRequest, User>(userRequestModel);
 
-            _userRepository.Update(user, HttpContext.RequestAborted);
+            await _userRepository.Update(user, HttpContext.RequestAborted);
 
             return Ok(user);
         }

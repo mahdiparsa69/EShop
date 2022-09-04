@@ -13,7 +13,7 @@ namespace EShop.Api.Consumers
         public override Task OnMessage(TransactionMessage message)
         {
             Console.WriteLine("**********************");
-            Console.WriteLine(message.TextMsg);
+            Console.WriteLine(message.TextMessage);
             Console.WriteLine("**********************");
             return Task.CompletedTask;
         }

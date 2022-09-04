@@ -22,7 +22,7 @@ namespace EShop.Api.AutoMapper
 
             CreateMap<OrderUpdateRequest, Order>();
 
-            CreateMap<UserRequestModel, User>();
+            CreateMap<LoginRequest, User>();
 
             CreateMap<UserCreateModel, User>();
 

@@ -1,5 +1,4 @@
 ﻿using EShop.Domain.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EShop.Repository.EntityConfigurations

@@ -29,12 +29,12 @@ namespace EShop.Api.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetWithoutIncludeAsync([FromRoute] Guid id)
+        public async Task<ActionResult<Order>> GetWithoutIncludeAsync([FromRoute] Guid id)
         {
             if (id == default)
                 return BadRequest();
 
-            var order = _orderRepository.GetWithoutIncludeAsync(id, HttpContext.RequestAborted);
+            var order = await _orderRepository.GetWithoutIncludeAsync(id, HttpContext.RequestAborted);
 
             if (order == null)
                 return NotFound();
@@ -43,7 +43,7 @@ namespace EShop.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetListAsync([FromQuery] string? name, [FromQuery] int offset = 0,
+        public async Task<ActionResult<List<OrderCompactViewModel>>?> GetListAsync([FromQuery] string? name, [FromQuery] int offset = 0,
             [FromQuery] int count = 10)
         {
             var requestToken = Request.Headers.TryGetValue("Authorization", out var accessToken);
@@ -60,15 +60,13 @@ namespace EShop.Api.Controllers
             if (isTokenValid == false)
                 return Unauthorized();
 
-            var orderFilter = new OrderFilter()
+            var orders = await _orderRepository.GetListAsync(new OrderFilter()
             {
                 Offset = offset,
                 Count = count
-            };
+            }, HttpContext.RequestAborted);
 
-            var orders = await _orderRepository.GetListAsync(orderFilter, HttpContext.RequestAborted);
-
-            if (orders.Items == null)
+            if (!orders.Items.Any())
                 return default;
 
             var result = _mapper.Map<List<Order>, List<OrderCompactViewModel>>(orders.Items);
@@ -79,8 +77,8 @@ namespace EShop.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAsync([FromBody] OrderCreateRequest orderCreateRequest)
         {
-            if (orderCreateRequest == null)
-                return BadRequest();
+            /* if (orderCreateRequest == null)
+                 return BadRequest();*/
 
             var order = _mapper.Map<Order>(orderCreateRequest);
 
@@ -92,7 +90,7 @@ namespace EShop.Api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Remove([FromRoute] Guid id)
+        public async Task<ActionResult> RemoveAsync([FromRoute] Guid id)
         {
             if (id == default)
                 return BadRequest();
@@ -102,7 +100,7 @@ namespace EShop.Api.Controllers
             if (order == null)
                 return NotFound();
 
-            _orderRepository.Remove(id, HttpContext.RequestAborted);
+            await _orderRepository.Remove(id, HttpContext.RequestAborted);
 
             return Ok();
         }

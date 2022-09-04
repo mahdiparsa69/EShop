@@ -18,7 +18,6 @@ namespace EShop.Service.Implementations
 
         public async Task SubscribeAsync(string subscriptionId, CancellationToken cancellationToken)
         {
-            Console.WriteLine("********************* Rabbit MQ Started *********************");
             await _bus.PubSub.SubscribeAsync<TMessage>(subscriptionId, OnMessageWrapper);
         }
 
