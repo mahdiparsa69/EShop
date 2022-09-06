@@ -6,6 +6,6 @@ namespace EShop.Service.Interfaces
     {
         string BuildToken(Object payload, JwtHashAlgorithm hashAlgorithm);
 
-        bool IsTokenValid(string Token, string Key);
+        bool IsTokenValid(string Token);
     }
 }

@@ -21,7 +21,7 @@
             {
                 _logger.LogError("Error Occured : " + ex);
 
-                httpContext.Response.StatusCode = 404;
+                httpContext.Response.StatusCode = 500;
                 //httpContext.Response.Redirect("/Error");
 
             }

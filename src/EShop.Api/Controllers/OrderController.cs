@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EShop.Api.CustomFilters;
 using EShop.Api.Models.RequstModels;
 using EShop.Api.Models.ViewModels;
 using EShop.Domain.Filters;
@@ -28,6 +29,7 @@ namespace EShop.Api.Controllers
             _configuration = configuration;
         }
 
+
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<Order>> GetWithoutIncludeAsync([FromRoute] Guid id)
         {
@@ -43,23 +45,11 @@ namespace EShop.Api.Controllers
         }
 
         [HttpGet]
+        [AuthorizationFilterWithFactory]
+        //[ServiceFilter(typeof(AuthorizeByTokenFilterAsync))]
         public async Task<ActionResult<List<OrderCompactViewModel>>?> GetListAsync([FromQuery] string? name, [FromQuery] int offset = 0,
             [FromQuery] int count = 10)
         {
-            var requestToken = Request.Headers.TryGetValue("Authorization", out var accessToken);
-
-            if (requestToken == false)
-                return Unauthorized();
-
-            string[] tokenStrings = accessToken.ToString().Split(" ");
-
-            var token = tokenStrings[1];
-
-            var isTokenValid = _tokenService.IsTokenValid(token, _configuration["Jwt:Key"].ToString());
-
-            if (isTokenValid == false)
-                return Unauthorized();
-
             var orders = await _orderRepository.GetListAsync(new OrderFilter()
             {
                 Offset = offset,

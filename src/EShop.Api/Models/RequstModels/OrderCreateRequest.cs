@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace EShop.Api.Models.RequstModels
+﻿namespace EShop.Api.Models.RequstModels
 {
     public class OrderCreateRequest
     {

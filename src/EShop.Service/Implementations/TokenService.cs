@@ -22,7 +22,7 @@ namespace EShop.Service.Implementations
             return generatedToken;
         }
 
-        public bool IsTokenValid(string Token, string Key)
+        public bool IsTokenValid(string Token)
         {
             var decodedPayload = JwtHelper.Decode<EShopAccessTokenPayload>(Token);
 
@@ -32,7 +32,7 @@ namespace EShop.Service.Implementations
             if (DateTime.Now > decodedPayload.ExpireTokenTime)
                 return false;
 
-            var isValid = JwtHelper.Validate(Token, Key);
+            var isValid = JwtHelper.Validate(Token, _configuration["Jwt:Key"].ToString());
 
             return isValid;
         }

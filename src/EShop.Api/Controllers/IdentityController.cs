@@ -1,12 +1,9 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 using EShop.Api.Models.RequstModels;
 using EShop.Api.Models.ViewModels;
 using EShop.Domain.Common;
 using EShop.Domain.Enums;
 using EShop.Domain.Interfaces;
-using EShop.Domain.Models;
 using EShop.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,7 +46,6 @@ namespace EShop.Api.Controllers
                 ExpireTokenTime = DateTime.Now.AddMinutes(30)
             };
 
-            //todo refactor tokenservice =>Done
             var generatedToken = _tokenService.BuildToken(eShopAccessTokenPayload, JwtHashAlgorithm.HS256);
 
             LoginResponse response = new LoginResponse()

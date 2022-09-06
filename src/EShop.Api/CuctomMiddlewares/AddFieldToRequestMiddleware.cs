@@ -21,7 +21,6 @@
                 await httpContext.Response.WriteAsync("Access is not valid ");
             }
 
-
             if (String.IsNullOrWhiteSpace(clientSecret.ToString()))
             {
                 httpContext.Response.StatusCode = 404;

@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 using EShop.Api.Models.RequstModels;
 using EShop.Domain.Common;
 using EShop.Domain.Filters;
@@ -41,7 +39,6 @@ namespace EShop.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<List<UserViewModel>>> GetListAsync([FromQuery] string? username, [FromQuery] int offset = 0, [FromQuery] int count = 10)
         {
-
             var users = await _userRepository.GetListAsync(new UserFilter
             {
                 Username = username,

@@ -46,16 +46,16 @@ namespace EShop.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> AddBasketAsync([FromBody] BasketItemRequest request)
         {
+            if (request.ProductId == default || request.ProductId == null)
+                return BadRequest("Invalid product ID");
+
             Guid userId = Guid.Parse("F9168C5E-CEB2-4faa-B6BF-329BF39F9408");
 
             var basketCacheKey = $"basket-{userId}";
 
             var cachedBasket = await _redisCacheService.FetchAsync<Basket>(basketCacheKey);
 
-            if (request.ProductId == default)
-                return BadRequest("Invalid product ID");
-
-            var product = await _productRepository.GetWithoutIncludeAsync(request.ProductId, HttpContext.RequestAborted);
+            var product = await _productRepository.GetWithoutIncludeAsync(request.ProductId.Value, HttpContext.RequestAborted);
 
             if (product == null)
                 return NotFound("Product not found");
@@ -88,6 +88,8 @@ namespace EShop.Api.Controllers
                 basket.DiscountAmount = basketItem.DiscountAmount;
 
                 await _redisCacheService.StoreAsync(basketCacheKey, basket, TimeSpan.FromHours(2));
+
+                return Ok(basket);
             }
             else
             {
@@ -132,7 +134,7 @@ namespace EShop.Api.Controllers
         }
 
         [HttpDelete("{userId:guid}")]
-        public async Task<IActionResult> RemoveFromBasketItem([FromRoute] Guid userId, [FromBody] BasketItemRequest request)
+        public async Task<ActionResult> RemoveFromBasketItem([FromRoute] Guid userId, [FromBody] BasketItemRequest request)
         {
             if (userId == default)
                 return BadRequest("Basket ID is not valid");
@@ -140,9 +142,9 @@ namespace EShop.Api.Controllers
             if (request.Count < 1)
                 return BadRequest("Count is not Valid");
 
-            var basketCachKey = $"basket-{userId}";
+            var basketCacheKey = $"basket-{userId}";
 
-            var cachedBasket = await _redisCacheService.FetchAsync<Basket>(basketCachKey);
+            var cachedBasket = await _redisCacheService.FetchAsync<Basket>(basketCacheKey);
 
             if (cachedBasket == null)
                 return NotFound("Basket Not Found");
@@ -174,15 +176,15 @@ namespace EShop.Api.Controllers
 
             cachedBasket.DiscountAmount = cachedBasket.BasketItems.Sum(x => x.DiscountAmount);
 
-            await _redisCacheService.StoreAsync(basketCachKey, cachedBasket, TimeSpan.FromHours(2));
+            await _redisCacheService.StoreAsync(basketCacheKey, cachedBasket, TimeSpan.FromHours(2));
 
-            return Ok();
+            return Ok(cachedBasket);
         }
 
 
 
         [HttpPost("finalize/{userId:guid}")]
-        public async Task<IActionResult> FinalizeToOrderAsync([FromRoute] Guid userId)
+        public async Task<ActionResult> FinalizeToOrderAsync([FromRoute] Guid userId)
         {
             if (userId == default)
                 return BadRequest("User ID is not valid");
@@ -216,13 +218,16 @@ namespace EShop.Api.Controllers
             //Add Order to repository And Add OrederItems to orderItem table automatically becase of relation between order and orderItems
             await _orderRepository.AddAsync(order, HttpContext.RequestAborted);
 
-            return Ok();
+            return Ok(order);
         }
 
         [HttpPost("payment/{orderId:guid}")]
-        public async Task<IActionResult> Payment([FromRoute] Guid orderId)
+        public async Task<ActionResult> Payment([FromRoute] Guid orderId)
         {
             var order = await _orderRepository.GetWithoutIncludeAsync(orderId, HttpContext.RequestAborted);
+
+            if (order == null)
+                return BadRequest();
 
             if (order.IsPaid == false)
             {
@@ -252,6 +257,7 @@ namespace EShop.Api.Controllers
                     transaction.PaymentCode = Guid.NewGuid().ToString();
                     //order.Transactions.Add(transaction);
                 }
+
                 if (transaction.Status == TransactionStatus.UnSuccessful)
                 {
                     order.IsPaid = false;
@@ -270,7 +276,7 @@ namespace EShop.Api.Controllers
         }
 
         [HttpGet("transactions")]
-        public async Task<IActionResult> GetListTransactionAsync([FromQuery] int offset = 0, [FromQuery] int count = 10)
+        public async Task<ActionResult<List<TransactionViewModel>>> GetListTransactionAsync([FromQuery] int offset = 0, [FromQuery] int count = 10)
         {
             TransactionFilter filter = new TransactionFilter()
             {
@@ -280,7 +286,7 @@ namespace EShop.Api.Controllers
 
             var transactions = await _transactionRepository.GetListAsync(filter, HttpContext.RequestAborted);
 
-            if (transactions.Items == null)
+            if (transactions.Items.Count == 0)
                 return default;
 
             var result = _mapper.Map<List<Transaction>, List<TransactionViewModel>>(transactions.Items);

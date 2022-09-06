@@ -1,4 +1,6 @@
-﻿namespace EShop.Domain.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EShop.Domain.Models
 {
     public class Order : BaseModel
     {
