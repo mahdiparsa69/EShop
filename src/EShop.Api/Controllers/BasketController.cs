@@ -246,7 +246,7 @@ namespace EShop.Api.Controllers
 
                 tx.TextMessage = $"New Transaction Added. Id is : {transaction.Id}";
 
-                _asyncJobProducer.PublishAsync(tx, HttpContext.RequestAborted);
+                await _asyncJobProducer.PublishAsync(tx, HttpContext.RequestAborted);
 
                 Console.WriteLine("*********************Message Published!!!**********************************");
 

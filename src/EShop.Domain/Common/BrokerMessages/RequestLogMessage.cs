@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EasyNetQ;
 
-namespace EShop.Domain.Models
+namespace EShop.Domain.Common.BrokerMessages
 {
-    public class RequestLog : BaseModel
+    [Queue(queueName: "RequestLogQueue", ExchangeName = "RequestLogExchange")]
+    public class RequestLogMessage : BaseMessage
     {
         public string? Path { get; set; }
 
@@ -15,7 +12,5 @@ namespace EShop.Domain.Models
         public string? AccessToken { get; set; }
 
         public string? ContentType { get; set; }
-
-
     }
 }

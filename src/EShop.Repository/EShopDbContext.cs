@@ -18,6 +18,7 @@ public class EShopDbContext : DbContext
         modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
         modelBuilder.ApplyConfiguration(new TransactionConfiguration());
         modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new RequestLogConfiguration());
 
         //modelBuilder.ForNpgsqlUseXminAsConcurrencyToken();
 
@@ -41,4 +42,6 @@ public class EShopDbContext : DbContext
     public DbSet<OrderItem> OrderItems { get; set; }
 
     public DbSet<Transaction> Transactions { get; set; }
+
+    public DbSet<RequestLog> RequestLogs { get; set; }
 }

@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{EA2D42BC
 		Directory.Build.targets = Directory.Build.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsumerRequestLog", "ConsumerRequestLog\ConsumerRequestLog.csproj", "{0CC03F08-F2AD-4B9F-8DCB-9A7726663777}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{32459EE2-39DA-4A6E-BB7D-8ECC6A1F2921}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32459EE2-39DA-4A6E-BB7D-8ECC6A1F2921}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32459EE2-39DA-4A6E-BB7D-8ECC6A1F2921}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CC03F08-F2AD-4B9F-8DCB-9A7726663777}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CC03F08-F2AD-4B9F-8DCB-9A7726663777}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CC03F08-F2AD-4B9F-8DCB-9A7726663777}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CC03F08-F2AD-4B9F-8DCB-9A7726663777}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +56,7 @@ Global
 		{C1F5A3D2-ED4D-4A5F-A0A5-2B2795C06490} = {9FA29140-BE8C-4880-814F-381C99C62742}
 		{813E7F2E-F636-4728-A355-2A0C9A74A5BD} = {9FA29140-BE8C-4880-814F-381C99C62742}
 		{32459EE2-39DA-4A6E-BB7D-8ECC6A1F2921} = {9FA29140-BE8C-4880-814F-381C99C62742}
+		{0CC03F08-F2AD-4B9F-8DCB-9A7726663777} = {9FA29140-BE8C-4880-814F-381C99C62742}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6080547A-E866-429D-BF93-3B297EC64F80}

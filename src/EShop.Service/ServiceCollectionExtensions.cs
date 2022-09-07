@@ -1,4 +1,5 @@
 ﻿using EasyNetQ;
+using EShop.Domain.Common.BrokerMessages;
 using EShop.Service.Implementations;
 using EShop.Service.Interfaces;
 using Hangfire;
@@ -27,9 +28,11 @@ namespace EShop.Service
 
             services.AddSingleton<IBus>(RabbitHutch.CreateBus("host=127.0.0.1,port=5672"));
 
-            /* services.AddSingleton<IAsyncJobConsumer<TransactionMessage>, TransactionMessageConsumer>();
+            /*services.AddSingleton<IAsyncJobConsumer<TransactionMessage>, TransactionMessageConsumer>();
 
-             services.AddHostedService<TransactionMessageConsumerHost>();*/
+            services.AddHostedService<TransactionMessageConsumerHost>();*/
+
+
 
             services.AddHangfire(x => x
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)

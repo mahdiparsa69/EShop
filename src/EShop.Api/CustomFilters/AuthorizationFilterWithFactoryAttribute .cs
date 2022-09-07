@@ -43,6 +43,7 @@ namespace EShop.Api.CustomFilters
         public IFilterMetadata CreateInstance(IServiceProvider serviceProvider)
         {
             ITokenService tokenServicInstance = serviceProvider.GetService<ITokenService>();
+
             return new InternalAuthorizationFilter(tokenServicInstance);
         }
     }

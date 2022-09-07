@@ -92,6 +92,7 @@ namespace EShop.Api.Controllers
 
             var result = _mapper.Map<List<Product>, List<ProductViewModel>>(products.Items);
 
+
             return Ok(result);
         }
 

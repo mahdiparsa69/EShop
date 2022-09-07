@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using ConsumerRequestLog.Consumer;
+using EShop.Domain.Common.BrokerMessages;
+using EShop.Domain.Models;
+using EShop.Service.Interfaces;
 using Microsoft.Extensions.Primitives;
 
 namespace EShop.Api.CuctomMiddlewares
@@ -10,14 +14,16 @@ namespace EShop.Api.CuctomMiddlewares
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<HeaderLogMiddleware> _logger;
+        //private readonly IAsyncJobProducer _asyncJobProducer;
 
         public HeaderLogMiddleware(RequestDelegate next, ILogger<HeaderLogMiddleware> logger)
         {
             _next = next;
             _logger = logger;
+            //_asyncJobProducer = asyncJobProducer;
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext, IAsyncJobProducer _asyncJobProducer)
         {
             var accessToken = httpContext.Request.Headers.Authorization.ToString();
 
@@ -25,15 +31,20 @@ namespace EShop.Api.CuctomMiddlewares
 
             var path = httpContext.Request.Host + httpContext.Request.Path + httpContext.Request.QueryString;
 
-            _logger.LogInformation("***************Header:" + ipAddress);
-            _logger.LogInformation("***************AccessToken:" + accessToken);
-            _logger.LogInformation("***************Path:" + path);
+            httpContext.Response.Headers.TryGetValue("Content-Type", out StringValues ContentType);
 
+            RequestLogMessage requestLog = new RequestLogMessage()
+            {
+                Path = path,
+                AccessToken = accessToken,
+                IpAddress = ipAddress,
+                ContentType = ContentType
+            };
+            //await _asyncJobProducer.PublishAsync(requestLog, httpContext.RequestAborted);
 
             await _next(httpContext);
 
-            // httpContext.Response.Headers.TryGetValue("Content-Type", out StringValues ContentType);
-
+            await _asyncJobProducer.PublishAsync(requestLog, httpContext.RequestAborted);
         }
     }
 

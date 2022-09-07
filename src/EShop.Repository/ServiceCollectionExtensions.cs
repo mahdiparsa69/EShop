@@ -36,6 +36,8 @@ namespace EShop.Repository
 
             services.AddScoped<IUserRepository, UserRepository>();
 
+            services.AddScoped<IRequestLogRepository, RequestLogRepository>();
+
             //services.AddAutoMapper(typeof(Program));
         }
     }

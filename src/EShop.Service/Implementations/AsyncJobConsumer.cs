@@ -15,7 +15,6 @@ namespace EShop.Service.Implementations
             _bus = bus;
         }
 
-
         public async Task SubscribeAsync(string subscriptionId, CancellationToken cancellationToken)
         {
             await _bus.PubSub.SubscribeAsync<TMessage>(subscriptionId, OnMessageWrapper);
