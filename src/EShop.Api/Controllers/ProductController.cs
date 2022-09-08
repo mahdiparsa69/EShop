@@ -78,17 +78,19 @@ namespace EShop.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductViewModel>>?> GetListAsync([FromQuery] string? name, [FromQuery] int offSet = 0, [FromQuery] int count = 10)
+        public async Task<ActionResult<List<ProductViewModel>>?> GetListAsync([FromQuery] string? name, [FromQuery] int offset = 0, [FromQuery] int count = 10)
         {
             var products = await _productRepository.GetListAsync(new ProductFilter()
             {
                 Name = name,
-                Offset = offSet,
+                Offset = offset,
                 Count = count
             }, HttpContext.RequestAborted);
 
             if (!products.Items.Any())
                 return default;
+
+            Response.Headers.Add("nextUrl", $"?offset={offset + count}&count={count}");
 
             var result = _mapper.Map<List<Product>, List<ProductViewModel>>(products.Items);
 

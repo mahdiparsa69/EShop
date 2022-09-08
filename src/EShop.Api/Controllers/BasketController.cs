@@ -42,9 +42,8 @@ namespace EShop.Api.Controllers
             _asyncJobProducer = asyncJobProducer;
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> AddBasketAsync([FromBody] BasketItemRequest request)
+        public async Task<ActionResult<Basket>> AddBasketAsync([FromBody] BasketItemRequest request)
         {
             if (request.ProductId == default || request.ProductId == null)
                 return BadRequest("Invalid product ID");
@@ -134,7 +133,7 @@ namespace EShop.Api.Controllers
         }
 
         [HttpDelete("{userId:guid}")]
-        public async Task<ActionResult> RemoveFromBasketItem([FromRoute] Guid userId, [FromBody] BasketItemRequest request)
+        public async Task<ActionResult<Basket>> RemoveFromBasketItem([FromRoute] Guid userId, [FromBody] BasketItemRequest request)
         {
             if (userId == default)
                 return BadRequest("Basket ID is not valid");
@@ -184,7 +183,7 @@ namespace EShop.Api.Controllers
 
 
         [HttpPost("finalize/{userId:guid}")]
-        public async Task<ActionResult> FinalizeToOrderAsync([FromRoute] Guid userId)
+        public async Task<ActionResult<Order>> FinalizeToOrderAsync([FromRoute] Guid userId)
         {
             if (userId == default)
                 return BadRequest("User ID is not valid");
@@ -222,7 +221,7 @@ namespace EShop.Api.Controllers
         }
 
         [HttpPost("payment/{orderId:guid}")]
-        public async Task<ActionResult> Payment([FromRoute] Guid orderId)
+        public async Task<ActionResult<Transaction>> Payment([FromRoute] Guid orderId)
         {
             var order = await _orderRepository.GetWithoutIncludeAsync(orderId, HttpContext.RequestAborted);
 
@@ -268,7 +267,7 @@ namespace EShop.Api.Controllers
 
                 await _orderRepository.Update(order, HttpContext.RequestAborted);
 
-                return Ok();
+                return Ok(transaction);
             }
 
             return BadRequest("Order Can Not Payed Two Times.It is payed before ");
@@ -288,6 +287,8 @@ namespace EShop.Api.Controllers
 
             if (transactions.Items.Count == 0)
                 return default;
+
+            Response.Headers.Add("nextUrl", $"?offset={offset + count}&count={count}");
 
             var result = _mapper.Map<List<Transaction>, List<TransactionViewModel>>(transactions.Items);
 

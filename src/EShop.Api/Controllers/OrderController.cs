@@ -59,6 +59,8 @@ namespace EShop.Api.Controllers
             if (!orders.Items.Any())
                 return default;
 
+            Response.Headers.Add("nextUrl", $"?offset={offset + count}&count={count}");
+
             var result = _mapper.Map<List<Order>, List<OrderCompactViewModel>>(orders.Items);
 
             return Ok(result);
@@ -90,9 +92,12 @@ namespace EShop.Api.Controllers
             if (order == null)
                 return NotFound();
 
+            if (order.IsPaid == true)
+                return BadRequest("Order Payment Status is True. You Can Not Remove Successful Payment Order");
+
             await _orderRepository.Remove(id, HttpContext.RequestAborted);
 
-            return Ok();
+            return Ok($"Order with ID {id} Removed Successfully");
         }
     }
 }

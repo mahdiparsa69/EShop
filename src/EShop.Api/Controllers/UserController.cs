@@ -57,10 +57,15 @@ namespace EShop.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAsync([FromBody] UserCreateModel userCreateModel)
+        public async Task<ActionResult<UserViewModel>> AddAsync([FromBody] UserCreateModel userCreateModel)
         {
             if (userCreateModel == null)
                 return BadRequest();
+
+            var userFromDb = _userRepository.GetUserByUsernameAsync(userCreateModel.Username, HttpContext.RequestAborted);
+
+            if (userFromDb != null)
+                return BadRequest("Username Already Exist");
 
             var user = _mapper.Map<UserCreateModel, User>(userCreateModel);
 
@@ -74,7 +79,7 @@ namespace EShop.Api.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Remove([FromBody] LoginRequest userRequestModel)
+        public async Task<ActionResult<User>> Remove([FromBody] LoginRequest userRequestModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -90,7 +95,7 @@ namespace EShop.Api.Controllers
         }
 
         [HttpDelete("{userId:guid}")]
-        public async Task<IActionResult> Remove([FromRoute] Guid userId)
+        public async Task<ActionResult> Remove([FromRoute] Guid userId)
         {
             if (userId == null)
                 return BadRequest();
@@ -101,7 +106,7 @@ namespace EShop.Api.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] LoginRequest userRequestModel)
+        public async Task<ActionResult<User>> Update([FromBody] LoginRequest userRequestModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
